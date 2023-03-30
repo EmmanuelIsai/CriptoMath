@@ -106,3 +106,37 @@ def suma_Fp(A, p, P, Q):
     y3 = (yfracc * (P[0]-x3) - P[1])%p
     R = [x3, y3]
     return(R)
+
+def orden(a, p):
+    for opt in range(2, p):
+        if fastpower(a, opt, p) == 1:
+            return opt
+
+def shank(g, h, p):
+    N = orden(g, p) # ord(g)
+    n = 1 + math.floor(math.sqrt(N))
+    u = fastpower(inverso_mult(g, p), n, p)
+
+    tmp = 1
+    tmp2 = h 
+    l1 = []
+    l2 = []
+
+    for i in range(0, n+1):
+        tmp = (tmp * g) % p
+        tmp2 = (tmp2 * u) % p
+        l1.append(tmp)
+        l2.append(tmp2)
+
+    colision = list(set(l1).intersection(l2))
+
+    i = l1.index(colision[0]) + 1
+    j = l2.index(colision[0]) + 1
+    #print(colision, i, j)
+
+    x = i + j*n
+
+    if fastpower(g, x, p) == h:
+        return x
+    else:
+        print('Error')
