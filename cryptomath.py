@@ -1,4 +1,5 @@
 import math
+from random import randint
 
 # Criba de erastostenes
 def primos(n):
@@ -107,11 +108,13 @@ def suma_Fp(A, p, P, Q):
     R = [x3, y3]
     return(R)
 
+# Encuentra el orden de un entero en modulo p
 def orden(a, p):
     for opt in range(2, p):
         if fastpower(a, opt, p) == 1:
             return opt
 
+# Algoritmo de Shank
 def shank(g, h, p):
     N = orden(g, p) # ord(g)
     n = 1 + math.floor(math.sqrt(N))
@@ -140,3 +143,41 @@ def shank(g, h, p):
         return x
     else:
         print('Error')
+
+# Prueba de primalidad de Miller Rabin
+# Obtenido de:
+# https://justyusblog.wordpress.com/2016/09/11/metodo-de-miller-rabin-en-python/
+
+def millerrabin(p):
+    #Primero comprobamos que sea impar.
+    if 1&p==0:
+        return False
+        #False = no primo
+        #True = primo
+
+    #Expresamos p-1 como 2^u*s, con s impar.
+    s = p-1
+    #Dividir s por 2 hasta que el resultado sea impar.
+    u = 0
+    while 1&s==0:
+        u= u+1
+        s = s >> 1
+
+    print(p,"= 2^",u,"*",s)
+
+    for _ in range(20):#Ejecuciones para reducir las probabiliades de fallo.
+        #Elegimos a al azar tal que 2 <= a <= p-2
+        a = randint(2, p - 2)
+        a = fastpower(a,s,p)
+
+        if a == 1 or a == p-1:#p-1 = -1
+            return True
+        else:
+            for i in [1,1,u-1]:
+                a = fastpower(a,2,p)
+                if a == p-1:
+                    return True
+                elif a == 1:
+                    return False
+                i=i+1
+            return False
